@@ -4,10 +4,13 @@ project(IODash)
 set(CMAKE_CXX_STANDARD 17)
 
 
-
-add_library(IODash IODash.cpp IODash.hpp
+set(SOURCE_FILES IODash.cpp IODash.hpp
         IODash/SocketAddress.hpp IODash/File.hpp IODash/Socket.hpp IODash/EventLoop.hpp IODash/Serial.hpp IODash/Timer.hpp
         )
+
+include(GNUInstallDirs)
+
+add_library(IODash ${SOURCE_FILES})
 target_include_directories(IODash PUBLIC . cpp_modules/portable-endian)
 
 add_executable(IODash_Test test.cpp)
@@ -24,3 +27,11 @@ if (DEFINED BUILD_BENCHMARKS AND (${BUILD_BENCHMARKS}))
     target_link_libraries(boost_Benchmark_HTTP boost_system pthread)
 endif()
 
+install(TARGETS IODash
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES IODash.hpp cpp_modules/portable-endian/portable-endian.h
+        DESTINATION include/)
+
+install(FILES
+        IODash/SocketAddress.hpp IODash/File.hpp IODash/Socket.hpp IODash/EventLoop.hpp IODash/Serial.hpp IODash/Timer.hpp
+        DESTINATION include/IODash)
